@@ -26,7 +26,7 @@ jobs:
         ./gradlew build
       working-directory: ./jflap
     - name: artifact
-    - uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v2
       with:
         name: jarFile
         path: jflap/build/libs/JFLAP.jar
