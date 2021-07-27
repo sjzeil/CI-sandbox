@@ -18,10 +18,12 @@ jobs:
       with:
         java-version: '11'
         distribution: 'adopt'
-    - name: Build the plugin
+    - name: Grant execute permission for gradlew
       working-directory: ./jflap
+      run: chmod +x gradlew
+    - name: Build the plugin
       run: |
-	    chmod +x gradlew
-		./gradlew build
+        ./gradlew build
+      working-directory: ./jflap
 
         
