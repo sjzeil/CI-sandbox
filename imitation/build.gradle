@@ -1,0 +1,17 @@
+plugins {
+   id 'java'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.0'
+    testImplementation 'org.hamcrest:hamcrest-library:2.2'
+}
+
+test {
+    ignoreFailures = true
+    useJUnitPlatform()
+}
