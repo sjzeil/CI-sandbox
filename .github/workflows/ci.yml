@@ -24,21 +24,17 @@ jobs:
       working-directory: ./imitation
       run: chmod +x gradlew
     - name: Build and test
+      working-directory: ./imitation
       run: |
         echo ./gradlew build
-      working-directory: ./imitation
-    - name: Set up gh-pages branch
+    - name: Set up local gh-pages branch
+      working-directory: .
       run: |
         git checkout -b gh-pages origin/gh-pages  # make sure that gh-pages branch is available
-        git checkout main
-      working-directory: .
+        git checkout main # but then go back to main
     - name: Update website
-      run: |
-        ./gradlew clonePages
-        ls -a build/gh-pages
-        ./gradlew copyReports copyJavadocs copyStaticContent
-        ls -a build/gh-pages
-        ./gradlew deployReports
       working-directory: ./imitation
+      run: |
+        ./gradlew deployReports
       
         

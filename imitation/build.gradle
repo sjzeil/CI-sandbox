@@ -66,12 +66,8 @@ task updateGHPages (dependsOn: ['copyReports', 'copyJavadocs', 'copyStaticConten
         def grgit = git.open {
             dir = pagesDir
         }
-        grgit.add (update: false, patterns: ['reports/'])
-        grgit.add (update: true, patterns: ['reports/'])
-        grgit.add (update: false, patterns: ['docs/'])
-        grgit.add (update: true, patterns: ['docs/'])
-        grgit.add (update: false, patterns: ['*.md'])
-        grgit.add (update: true, patterns: ['*.md'])
+        grgit.add (update: false, patterns: ['javadoc'])
+        grgit.add (update: true, patterns: ['javadoc'])
         grgit.commit {
             message = "Updating web pages"
         }
