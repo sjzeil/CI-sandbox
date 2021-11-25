@@ -62,11 +62,13 @@ task updateGHPages (dependsOn: ['copyReports', 'copyJavadocs', 'copyStaticConten
     group = "Reporting"
     description  'Copies reports to the gh-pages branch in preparation for a future push to GitHub'
     doLast {
-        def pagesDir = "$buildDir/gh-pages"
         exec {
-            workingDir = '.'
+            commandLine = ['ls', '-a', 'build']
+        }
+        exec {
             commandLine = ['ls', '-a', 'build/gh-pages']
         }
+        def pagesDir = "$buildDir/gh-pages"
         def grgit = git.open {
             dir = pagesDir
         }
