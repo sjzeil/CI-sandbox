@@ -27,10 +27,13 @@ jobs:
       run: |
         echo ./gradlew build
       working-directory: ./imitation
-    - name: Update website
+    - name: Set up gh-pages branch
       run: |
         git checkout -b gh-pages origin/gh-pages  # make sure that gh-pages branch is available
         git checkout main
+      working-directory: .
+    - name: Update website
+      run: |
         ./gradlew clonePages
         ls -a build/gh-pages
         ./gradlew copyReports copyJavadocs copyStaticContent
