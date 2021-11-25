@@ -29,6 +29,7 @@ jobs:
       run: |
         git --version
         git branch -a
+        git config --get remote.origin.url
         git checkout -b gh-pages origin/gh-pages  # make sure that gh-pages branch is available
         git checkout main
         ./gradlew deployReports
