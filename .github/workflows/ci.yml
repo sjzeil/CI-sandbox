@@ -19,16 +19,15 @@ jobs:
         java-version: '11'
         distribution: 'adopt'
     - name: Grant execute permission for gradlew
-      working-directory: ./jflap
+      working-directory: ./imitation
       run: chmod +x gradlew
-    - name: Build the plugin
+    - name: Build and test
       run: |
         ./gradlew build
-      working-directory: ./jflap
-    - name: artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: jarFile
-        path: jflap/build/libs/JFLAP.jar
+      working-directory: ./imitation
+    - name: Update website
+      run: |
+        ./gradlew deployReports
+      working-directory: ./imitation
       
         
