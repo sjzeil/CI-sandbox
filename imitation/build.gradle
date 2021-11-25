@@ -43,21 +43,27 @@ task clonePages() {
     }
 }
 
-/*
-task copyReports (type: Copy, dependsOn: ['reports', 'clonePages']) { 
-    from "$buildDir/reports"
-    into "$buildDir/gh-pages"
+/* Alternate form without grgit
+task clonePages() { 
+    doLast {
+        mkdir 'build/gh-pages'
+        def thisRepo = rootProject.projectDir.toString() + '/..'
+        def pagesDir = "$buildDir/gh-pages"
+        project.delete {
+            delete pagesDir
+        }
+        exec {
+            workingDir = 'build/gh-pages'
+            commandLine = ['git', 'clone', 'file:' + thisRepo]
+        }
+        exec {
+            workingDir = 'build/gh-pages'
+            commandLine = ['git', 'checkout', 'gh-pages']
+        }
+    }
 }
+*/
 
-task copyJavadocs (type: Copy, dependsOn: ['reports', 'clonePages']) {  
-    from "$buildDir/docs"
-    into "$buildDir/gh-pages"
-}
-
-task copyStaticContent (type: Copy, dependsOn: ['reports', 'clonePages']) {  
-    from "src/main/html"
-    into "$buildDir/gh-pages"
-}*/
 
 task copyWebsite (dependsOn: ['reports', 'clonePages']) {
     doLast {
@@ -75,17 +81,10 @@ task copyWebsite (dependsOn: ['reports', 'clonePages']) {
 
 
 
-//task updateGHPages (dependsOn: ['copyReports', 'copyJavadocs', 'copyStaticContent']) {
 task updateGHPages (dependsOn: ['copyWebsite']) {
     group = "Reporting"
     description  'Copies reports to the gh-pages branch in preparation for a future push to GitHub'
     doLast {
-        exec {
-            commandLine = ['ls', '-a', 'build']
-        }
-        exec {
-            commandLine = ['ls', '-a', 'build/gh-pages']
-        }
         def pagesDir = "$buildDir/gh-pages"
         def grgit = git.open {
             dir = pagesDir
@@ -99,6 +98,30 @@ task updateGHPages (dependsOn: ['copyWebsite']) {
         grgit.close()
     }
 }
+
+/* Alternate form without grgit
+task updateGHPages (dependsOn: 'copyWebsite') {
+    group = "Reporting"
+    description  'Copies reports to the gh-pages branch in preparation for a future push to GitHub'
+    doLast {
+        def pagesDir = "$buildDir/gh-pages"
+        exec {
+            workingDir = 'build/gh-pages'
+            commandLine = ['git', 'add', '.']
+        }
+        exec {
+            workingDir = 'build/gh-pages'
+            commandLine = ['git', 'commit', '-m', 'Updating-webpages']
+        }
+        exec {
+            workingDir = 'build/gh-pages'
+            commandLine = ['git', 'push']
+        }
+    }
+}
+*/
+
+
 
 
 
