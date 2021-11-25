@@ -43,7 +43,8 @@ task clonePages() {
     }
 }
 
-task copyReports (type: Copy, dependsOn: ['reports', 'clonePages']) {  
+/*
+task copyReports (type: Copy, dependsOn: ['reports', 'clonePages']) { 
     from "$buildDir/reports"
     into "$buildDir/gh-pages"
 }
@@ -56,9 +57,26 @@ task copyJavadocs (type: Copy, dependsOn: ['reports', 'clonePages']) {
 task copyStaticContent (type: Copy, dependsOn: ['reports', 'clonePages']) {  
     from "src/main/html"
     into "$buildDir/gh-pages"
+}*/
+
+task copyWebsite (dependsOn: ['reports', 'clonePages']) {
+    doLast {
+        ant.copy (todir: 'build/gh-pages') {
+            fileset(dir: 'build/reports')
+        }
+        ant.copy (todir: 'build/gh-pages') {
+            fileset(dir: 'build/docs')
+        }
+        ant.copy (todir: 'build/gh-pages') {
+            fileset(dir: 'src/main/html')
+        }
+    }
 }
 
-task updateGHPages (dependsOn: ['copyReports', 'copyJavadocs', 'copyStaticContent']) {
+
+
+//task updateGHPages (dependsOn: ['copyReports', 'copyJavadocs', 'copyStaticContent']) {
+task updateGHPages (dependsOn: ['copyWebsite']) {
     group = "Reporting"
     description  'Copies reports to the gh-pages branch in preparation for a future push to GitHub'
     doLast {
@@ -81,6 +99,8 @@ task updateGHPages (dependsOn: ['copyReports', 'copyJavadocs', 'copyStaticConten
         grgit.close()
     }
 }
+
+
 
 task deployReports (dependsOn: 'updateGHPages') {
     doLast {
