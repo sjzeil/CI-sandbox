@@ -75,6 +75,7 @@ task updateGHPages (dependsOn: ['copyReports', 'copyJavadocs', 'copyStaticConten
         grgit.commit {
             message = "Updating web pages"
         }
-        //grgit.push {}
+        grgit.push {}
+        grgit.close()
     }
 }
