@@ -1,5 +1,6 @@
 plugins {
    id 'java'
+   id "org.xbib.gradle.plugin.git" version "2.0.0"
 }
 
 repositories {
@@ -14,4 +15,66 @@ dependencies {
 test {
     ignoreFailures = true
     useJUnitPlatform()
+}
+
+task reports (dependsOn: ['javadoc', 'test']) {}
+
+////////  Website publication on GitHub pages ///////////////////
+
+
+task clonePages() { 
+    doLast {
+        mkdir 'build/gh-pages'
+        def thisRepo = rootProject.projectDir.toString() + '/..'
+        def pagesDir = "$buildDir/gh-pages"
+        project.delete {
+            delete pagesDir
+        }
+        def grgit = git.clone {
+            dir = pagesDir
+            uri = 'file:' + thisRepo
+            bare = false
+            refToCheckout = 'gh-pages'
+        }
+        grgit.checkout {
+            branch = 'gh-pages'
+        }
+        grgit.close()
+    }
+}
+
+task copyReports (type: Copy, dependsOn: ['reports', 'clonePages']) {  
+    from "$buildDir/reports"
+    into "$buildDir/gh-pages"
+}
+
+task copyJavadocs (type: Copy, dependsOn: ['reports', 'clonePages']) {  
+    from "$buildDir/docs"
+    into "$buildDir/gh-pages"
+}
+
+task copyStaticContent (type: Copy, dependsOn: ['reports', 'clonePages']) {  
+    from "src/main/html"
+    into "$buildDir/gh-pages"
+}
+
+task updateGHPages (dependsOn: ['copyReports', 'copyJavadocs', 'copyStaticContent']) {
+    group = "Reporting"
+    description  'Copies reports to the gh-pages branch in preparation for a future push to GitHub'
+    doLast {
+        def pagesDir = "$buildDir/gh-pages"
+        def grgit = git.open {
+            dir = pagesDir + "/.git"
+        }
+        grgit.add (update: false, patterns: ['reports/'])
+        grgit.add (update: true, patterns: ['reports/'])
+        grgit.add (update: false, patterns: ['docs/'])
+        grgit.add (update: true, patterns: ['docs/'])
+        grgit.add (update: false, patterns: ['*.md'])
+        grgit.add (update: true, patterns: ['*.md'])
+        grgit.commit {
+            message = "Updating web pages"
+        }
+        //grgit.push {}
+    }
 }
