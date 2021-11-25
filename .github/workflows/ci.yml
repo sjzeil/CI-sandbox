@@ -27,6 +27,8 @@ jobs:
       working-directory: ./imitation
     - name: Update website
       run: |
+        git checkout gh-pages origin/gh-pages  # make sure that gh-pages branch is available
+        git checkout main
         ./gradlew deployReports
       working-directory: ./imitation
       
