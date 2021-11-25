@@ -81,8 +81,10 @@ task updateGHPages (dependsOn: ['copyReports', 'copyJavadocs', 'copyStaticConten
 }
 
 task deployReports (dependsOn: 'updateGHPages') {
-    exec {
-        workingDir ='.'
-        commandLine = ['git', 'push', 'origin', 'gh-pages']
+    doLast {
+        exec {
+            workingDir ='.'
+            commandLine = ['git', 'push', 'origin', 'gh-pages']
+        }
     }
 }
