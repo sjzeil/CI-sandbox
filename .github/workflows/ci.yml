@@ -25,15 +25,16 @@ jobs:
       run: chmod +x gradlew
     - name: Build and test
       run: |
-        ./gradlew build
+        echo ./gradlew build
       working-directory: ./imitation
     - name: Update website
       run: |
-        git --version
-        git branch -a
-        git config --get remote.origin.url
         git checkout -b gh-pages origin/gh-pages  # make sure that gh-pages branch is available
         git checkout main
+        ./gradlew clonePages
+        ls -a build/gh-pages
+        ./gradlew copyReports copyJavadocs copyStaticContent
+        ls -a build/gh-pages
         ./gradlew deployReports
       working-directory: ./imitation
       
