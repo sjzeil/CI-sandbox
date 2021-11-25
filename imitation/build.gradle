@@ -79,3 +79,10 @@ task updateGHPages (dependsOn: ['copyReports', 'copyJavadocs', 'copyStaticConten
         grgit.close()
     }
 }
+
+task deployReports (dependsOn: 'updateGHPages') {
+    exec {
+        workingDir ='.'
+        commandLine = ['git', 'push', 'origin', 'gh-pages']
+    }
+}
