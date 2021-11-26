@@ -2,5 +2,5 @@
 
 for playing around with GitHub Actions
 
-* [reports](https://sjzeil.github.io/CI-sandbox/)
+* [reports](https://sjzeil.github.io/pages-sandbox/)
 
