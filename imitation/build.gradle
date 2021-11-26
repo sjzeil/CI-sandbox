@@ -24,22 +24,26 @@ task reports (dependsOn: ['javadoc', 'test']) {}
 
 def websiteRepo='git@github.com:sjzeil/pages-sandbox.git'
 
-task clonePages() { 
+task clearPages(type: Delete) {
+    delete 'build/gh-pages'
+}
+
+task clonePages(dependsOn: ['clearPages']) {
+    it.outputs.dir('build/gh-pages')
     doLast {
-        mkdir 'build/gh-pages'
-        def pagesDir = "$buildDir/gh-pages"
-        project.delete {
-            delete pagesDir
-        }
         exec {
-            workingDir = 'build/gh-pages'
-            commandLine = ['git', 'clone', websiteRepo]
+            workingDir = '.'
+            commandLine = ['git', 'clone', websiteRepo, 'build/gh-pages']
         }
     }
 }
 
 
 task copyWebsite (dependsOn: ['reports', 'clonePages']) {
+    it.inputs.dir('build/reports')
+    it.inputs.dir('build/docs')
+    it.inputs.dir('src/main/html')
+    it.inputs.dir('build/gh-pages')
     doLast {
         ant.copy (todir: 'build/gh-pages') {
             fileset(dir: 'build/reports')
@@ -58,6 +62,7 @@ task copyWebsite (dependsOn: ['reports', 'clonePages']) {
 task updateGHPages (dependsOn: 'copyWebsite') {
     group = "Reporting"
     description  'Copies reports to the gh-pages branch in preparation for a future push to GitHub'
+    it.inputs.dir('build/gh-pages')
     doLast {
         def pagesDir = "$buildDir/gh-pages"
         exec {
