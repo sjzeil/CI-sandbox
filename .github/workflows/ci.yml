@@ -25,6 +25,10 @@ jobs:
       working-directory: ./imitation
       run: |
         ./gradlew build
+    - name: Set up SSH agent
+      run: |
+        eval $(ssh-agent -s -t 600)       
+        ssh-add <(echo "${{ secrets.REPORTS_SSH_KEY }}")
     - name: Update website
       working-directory: ./imitation
       run: |
