@@ -27,11 +27,12 @@ jobs:
         ./gradlew build
     - name: Set up SSH agent
       run: |
-        eval $(ssh-agent -s -t 600)       
-        ssh-add <(echo "${{ secrets.REPORTS_SSH_KEY }}")
+        echo "${{ secrets.REPORTS_SSH_KEY }}"
     - name: Update website
       working-directory: ./imitation
       run: |
+        eval $(ssh-agent -s -t 600)       
+        ssh-add <(echo "${{ secrets.REPORTS_SSH_KEY }}")
         ./gradlew deployReports
       
         
