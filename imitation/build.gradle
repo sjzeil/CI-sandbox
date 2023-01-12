@@ -65,9 +65,13 @@ task copyWebsite (type: Exec, dependsOn: ['copyReports', 'copyDocs', 'copyWebpag
     commandLine = ['git', 'status']
 }
 
+task deployReports0 (type: Exec, dependsOn: 'copyWebsite') {
+    workingDir = pagesDir
+    commandLine = ['git', 'status']
+}
 
 
-task deployReports (dependsOn: 'copyWebsite') {
+task deployReports (dependsOn: 'deployReports0') {
     group = "Reporting"
     description  'Commit and push website changes to GitHub'
     doLast {
