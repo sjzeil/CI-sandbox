@@ -40,17 +40,22 @@ task workTree(type: Exec, dependsOn: ['clearPages']) {
     commandLine = ['git', 'worktree', 'add', '-f', pagesDir, 'origin/gh-pages']
 }
 
-task copyReports (type: Copy, dependsOn: ['reports', 'workTree']) {
+task wtCheckout(type: Exec, dependsOn: ['workTree']) { 
+    workingDir = pagesDir
+    commandLine = ['git', 'checkout', 'HEAD']
+}
+
+task copyReports (type: Copy, dependsOn: ['reports', 'wtCheckout']) {
     from 'build/reports'
     into 'build/gh-pages'
 }
 
-task copyDocs (type: Copy, dependsOn: ['javadoc', 'workTree']) {
+task copyDocs (type: Copy, dependsOn: ['javadoc', 'wtCheckout']) {
     from 'build/docs'
     into 'build/gh-pages'
 }
 
-task copyWebpages (type: Copy, dependsOn: ['workTree']) {
+task copyWebpages (type: Copy, dependsOn: ['wtCheckout']) {
     from 'src/main/html'
     into 'build/gh-pages'
 }
