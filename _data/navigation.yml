@@ -2,7 +2,7 @@ docs_list_title: CI Sandbox Navigation
 docs:
 
 - title: Home
-  url: index.md
+  url: index.html
 
 - title: JavaDocs
   url: javadoc/index.html
@@ -11,4 +11,4 @@ docs:
   url: tests/test/index.html
 
 - title: README
-  url: README.md
+  url: README.html
