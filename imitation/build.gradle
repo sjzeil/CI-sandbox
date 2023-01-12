@@ -17,6 +17,7 @@ test {
 }
 
 task timeStamp {
+    outputs.file  "build/reports/timeStamp.md"
     doLast {
         Date now = new Date()
         FileWriter out = new FileWriter("build/reports/timeStamp.md")
@@ -29,71 +30,63 @@ task reports (dependsOn: ['javadoc', 'test', 'timeStamp']) {}
 
 ////////  Website publication on GitHub pages ///////////////////
 
-def pagesDir = 'build/gh-pages'
+def pagesDir = file('build/gh-pages').absolutePath
 
 task clearPages(type: Delete) {
     delete pagesDir
 }
 
-task workTree(type: Exec, dependsOn: ['clearPages']) { 
-    workingDir = '.'
-    commandLine = ['git', 'worktree', 'add', '-f', pagesDir, 'origin/gh-pages']
+task workTree(dependsOn: ['clearPages']) { 
+    doLast {
+        exec {
+            commandLine = ['git', 'worktree', 'add', '-f', pagesDir, 'gh-pages']
+        }
+        exec {
+            commandLine = ['git', '-C', pagesDir, 'checkout', 'gh-pages']
+        }
+    }
 }
 
-task wtCheckout(type: Exec, dependsOn: ['workTree']) { 
-    workingDir = pagesDir
-    commandLine = ['ls', '-a']
-}
 
-task copyReports (type: Copy, dependsOn: ['reports', 'wtCheckout']) {
+task copyReports (type: Copy, dependsOn: ['reports', 'workTree']) {
     from 'build/reports'
     into 'build/gh-pages'
 }
 
-task copyDocs (type: Copy, dependsOn: ['javadoc', 'wtCheckout']) {
+task copyDocs (type: Copy, dependsOn: ['javadoc', 'workTree']) {
     from 'build/docs'
     into 'build/gh-pages'
 }
 
-task copyWebpages (type: Copy, dependsOn: ['wtCheckout']) {
+task copyWebpages (type: Copy, dependsOn: ['workTree']) {
     from 'src/main/html'
     into 'build/gh-pages'
 }
 
 task copyWebsite (type: Exec, dependsOn: ['copyReports', 'copyDocs', 'copyWebpages']) {
-    workingDir = pagesDir
-    commandLine = ['git', 'status']
-}
-
-task deployReports0 (type: Exec, dependsOn: 'copyWebsite') {
-    workingDir = pagesDir
-    commandLine = ['git', 'status']
+    commandLine = ['git', '-C', pagesDir, 'status']
 }
 
 
-task deployReports (dependsOn: 'deployReports0') {
+task deployReports (dependsOn: 'copyWebsite') {
     group = "Reporting"
     description  'Commit and push website changes to GitHub'
     doLast {
         Date now = new Date()
         exec {
-            workingDir = pagesDir
-            commandLine = ['git', 'status']
+            commandLine = ['git', '-C', pagesDir, 'status']
             ignoreExitValue = true
         }
         exec {
-            workingDir = pagesDir
-            commandLine = ['git', 'add', '.']
+            commandLine = ['git', '-C', pagesDir, 'add', pagesDir]
             ignoreExitValue = true
         }
         exec {
-            workingDir = pagesDir
-            commandLine = ['git', 'commit', '-m', 'Updating webpages at ' + now.toString()]
+            commandLine = ['git', '-C', pagesDir, 'commit', '-m', 'Updating webpages at ' + now.toString()]
             ignoreExitValue = true
         }
         exec {
-            workingDir = pagesDir
-            commandLine = ['git', 'push']
+            commandLine = ['git', '-C', pagesDir, 'push']
             ignoreExitValue = true
         }
     }
