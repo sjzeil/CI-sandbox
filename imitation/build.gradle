@@ -42,7 +42,7 @@ task workTree(type: Exec, dependsOn: ['clearPages']) {
 
 task wtCheckout(type: Exec, dependsOn: ['workTree']) { 
     workingDir = pagesDir
-    commandLine = ['git', 'checkout', 'HEAD']
+    commandLine = ['ls', '-a']
 }
 
 task copyReports (type: Copy, dependsOn: ['reports', 'wtCheckout']) {
