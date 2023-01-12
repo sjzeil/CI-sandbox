@@ -30,14 +30,15 @@ jobs:
     - name: Update website
       working-directory: ./imitation
       run: |
-        ./gradlew copyWebsite # deployReports
+        ls build/gh-pages
+        ./gradlew deployReports # copyWebsite
         cd build/gh-pages
         ls
-        git add .
+        #git add .
         git status
-        git commit -m "explicit commit from ci.yml"
-        git push
-        git status
-        
+        #git commit -m "explicit commit from ci.yml"
+        #git push
+        #git status
+
       
         
