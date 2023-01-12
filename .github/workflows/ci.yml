@@ -34,6 +34,7 @@ jobs:
         git config user.name "Steven Zeil"
         ./gradlew deployReports
         ls -a build/gh-pages
+        cd build/gh-pages
         git status
 
 
