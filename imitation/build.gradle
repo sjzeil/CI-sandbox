@@ -29,20 +29,15 @@ task reports (dependsOn: ['javadoc', 'test', 'timeStamp']) {}
 
 ////////  Website publication on GitHub pages ///////////////////
 
+def pagesDir = 'build/gh-pages'
 
-task workTree() { 
-    doLast {
-        def thisRepo = rootProject.projectDir.toString()
-        def pagesDir = "$buildDir/gh-pages"
-        mkdir pagesDir
-        project.delete {
-            delete pagesDir
-        }
-        exec {
-            workingDir = '.'
-            commandLine = ['git', 'worktree', 'add', '-f', pagesDir, 'origin/gh-pages']
-        }
-    }
+task clearPages(type: Delete) {
+    delete pagesDir
+}
+
+task workTree(type: Exec, dependsOn: ['clearPages']) { 
+    workingDir = '.'
+    commandLine = ['git', 'worktree', 'add', '-f', pagesDir, 'origin/gh-pages']
 }
 
 task copyReports (type: Copy, dependsOn: ['reports', 'workTree']) {
@@ -60,18 +55,9 @@ task copyWebpages (type: Copy, dependsOn: ['workTree']) {
     into 'build/gh-pages'
 }
 
-task copyWebsite (dependsOn: ['copyReports', 'copyDocs', 'copyWebpages']) {
-    doLast {
-        ant.copy (todir: 'build/gh-pages') {
-            fileset(dir: 'build/reports')
-        }
-        ant.copy (todir: 'build/gh-pages') {
-            fileset(dir: 'build/docs')
-        }
-        ant.copy (todir: 'build/gh-pages') {
-            fileset(dir: 'src/main/html')
-        }
-    }
+task copyWebsite (type: Exec, dependsOn: ['copyReports', 'copyDocs', 'copyWebpages']) {
+    workingDir = pagesDir
+    commandLine = ['git', 'status']
 }
 
 
@@ -80,14 +66,7 @@ task deployReports (dependsOn: 'copyWebsite') {
     group = "Reporting"
     description  'Commit and push website changes to GitHub'
     doLast {
-        def pagesDir = "$buildDir/gh-pages"
         Date now = new Date()
-        
-        exec {
-            workingDir = pagesDir
-            commandLine = ['pwd']
-            ignoreExitValue = true
-        }
         exec {
             workingDir = pagesDir
             commandLine = ['git', 'status']
