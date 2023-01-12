@@ -3,3 +3,4 @@ plugins:
 - jekyll-remote-theme
 title: "My CI SandBox"
 description: "A project devoted to exploring CI and web deployment options."
+baseurl: /

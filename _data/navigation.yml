@@ -1,0 +1,14 @@
+docs_list_title: CI Sandbox Navigation
+docs:
+
+- title: Home
+  url: index.md
+
+- title: JavaDocs
+  url: javadoc/index.html
+
+- title: Unit tests
+  url: tests/test/index.html
+
+- title: README
+  url: README.md
