@@ -91,10 +91,12 @@ task deployReports (dependsOn: 'copyWebsite') {
         exec {
             workingDir = pagesDir
             commandLine = ['git', 'commit', '-m', 'Updating webpages at ' + now.toString()]
+            ignoreExitValue = true
         }
         exec {
             workingDir = pagesDir
             commandLine = ['git', 'push']
+            ignoreExitValue = true
         }
     }
 }
