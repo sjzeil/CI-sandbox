@@ -89,12 +89,10 @@ task deployReports (dependsOn: 'copyWebsite') {
             ignoreExitValue = true
         }
         exec {
-        exec {
             workingDir = pagesDir
             commandLine = ['git', 'status']
             ignoreExitValue = true
         }
-        exec {
         exec {
             workingDir = pagesDir
             commandLine = ['git', 'add', '.']
