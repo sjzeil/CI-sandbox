@@ -32,13 +32,7 @@ jobs:
       run: |
         git config user.email "szeil@odu.edu"
         git config user.name "Steven Zeil"
-        ./gradlew copyWebsite
-        ls build/gh-pages
-        cat build/gh-pages/timeStamp.md
-        git status
         ./gradlew deployReports
-        cat build/gh-pages/timeStamp.md
-        git status
 
       
         
