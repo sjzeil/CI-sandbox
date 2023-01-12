@@ -40,7 +40,7 @@ task workTree() {
         }
         exec {
             workingDir = '.'
-            commandLine = ['git', 'worktree', 'add', '-f', pagesDir, 'gh-pages']
+            commandLine = ['git', 'worktree', 'add', '-f', pagesDir, 'origin/gh-pages']
         }
     }
 }
