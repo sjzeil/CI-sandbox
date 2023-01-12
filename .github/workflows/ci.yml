@@ -30,7 +30,6 @@ jobs:
     - name: Update website
       working-directory: ./imitation
       run: |
-        ls build/gh-pages
         ./gradlew deployReports # copyWebsite
         cd build/gh-pages
         ls
