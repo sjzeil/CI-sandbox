@@ -32,11 +32,26 @@ jobs:
       run: |
         git config user.email "szeil@odu.edu"
         git config user.name "Steven Zeil"
-        ./gradlew deployReports
-        ls -a build/gh-pages
+        ./gradlew build reports
+        git worktree add -f build/gh-pages gh-pages
         cd build/gh-pages
+        echo after worktree
+        ls -a
         git status
-
+        cp -rf ../reports/* ../docs/* ../../src/main/html/* .
+        echo after copy
+        ls -a
+        git status
+        git add -f . || echo continue
+        echo after git add
+        git status
+        git commit -m "gh-pages commit" || echo continue
+        echo after commit
+        git status
+        git push || echo continue
+        echo after push
+        
+        
 
       
         
