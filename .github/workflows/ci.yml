@@ -30,6 +30,8 @@ jobs:
     - name: Update website
       working-directory: ./imitation
       run: |
+        git config user.email "szeil@odu.edu"
+        git config user.name "Steven Zeil"
         ./gradlew deployReports # copyWebsite
         cd build/gh-pages
         ls
