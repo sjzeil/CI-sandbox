@@ -23,6 +23,7 @@ task timeStamp {
         FileWriter out = new FileWriter("build/reports/timeStamp.md")
         out.write("---\n")
         out.write("title: Time stamp\n")
+        out.write("layout: post\n")
         out.write("---\n")
         out.write("# Generated at\n\n" + now + "\n")
         out.close()
