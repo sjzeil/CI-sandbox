@@ -21,6 +21,9 @@ task timeStamp {
     doLast {
         Date now = new Date()
         FileWriter out = new FileWriter("build/reports/timeStamp.md")
+        out.write("---\n")
+        out.write("title: Time stamp\n")
+        out.write("---\n")
         out.write("# Generated at\n\n" + now + "\n")
         out.close()
         println "The timestamp is " + now
