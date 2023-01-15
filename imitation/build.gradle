@@ -39,10 +39,12 @@ task clearPages(type: Delete) {
 task workTree(dependsOn: ['clearPages']) { 
     doLast {
         exec {
+            workingDir = '.'
             commandLine = ['git', 'worktree', 'add', '-f', pagesDir, 'gh-pages']
         }
         exec {
-            commandLine = ['git', '-C', pagesDir, 'checkout', 'gh-pages']
+            workingDir = pagesDir
+            commandLine = ['git', 'checkout', 'gh-pages']
         }
     }
 }
@@ -74,19 +76,23 @@ task deployReports (dependsOn: 'copyWebsite') {
     doLast {
         Date now = new Date()
         exec {
-            commandLine = ['git', '-C', pagesDir, 'status']
+            workingDir = pagesDir
+            commandLine = ['git', 'status']
             ignoreExitValue = true
         }
         exec {
-            commandLine = ['git', '-C', pagesDir, 'add', pagesDir]
+            workingDir = pagesDir
+            commandLine = ['git', 'add', pagesDir]
             ignoreExitValue = true
         }
         exec {
-            commandLine = ['git', '-C', pagesDir, 'commit', '-m', 'Updating webpages at ' + now.toString()]
+            workingDir = pagesDir
+            commandLine = ['git', 'commit', '-m', 'Updating webpages at ' + now.toString()]
             ignoreExitValue = true
         }
         exec {
-            commandLine = ['git', '-C', pagesDir, 'push']
+            workingDir = pagesDir
+            commandLine = ['git', 'push']
             ignoreExitValue = true
         }
     }
