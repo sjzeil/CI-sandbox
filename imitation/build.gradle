@@ -30,7 +30,7 @@ task reports (dependsOn: ['javadoc', 'test', 'timeStamp']) {}
 
 ////////  Website publication on GitHub pages ///////////////////
 
-def pagesDir = file('build/gh-pages').absolutePath
+def pagesDir = file('../../website-tmp').absolutePath
 
 task clearPages(type: Delete) {
     delete pagesDir
@@ -52,17 +52,17 @@ task workTree(dependsOn: ['clearPages']) {
 
 task copyReports (type: Copy, dependsOn: ['reports', 'workTree']) {
     from 'build/reports'
-    into 'build/gh-pages'
+    into pagesDir
 }
 
 task copyDocs (type: Copy, dependsOn: ['javadoc', 'workTree']) {
     from 'build/docs'
-    into 'build/gh-pages'
+    into pagesDir
 }
 
 task copyWebpages (type: Copy, dependsOn: ['workTree']) {
     from 'src/main/html'
-    into 'build/gh-pages'
+    into pagesDir
 }
 
 task copyWebsite (type: Exec, dependsOn: ['copyReports', 'copyDocs', 'copyWebpages']) {
