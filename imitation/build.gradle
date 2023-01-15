@@ -70,8 +70,7 @@ task copyWebpages (type: Copy, dependsOn: ['workTree']) {
     into pagesDir
 }
 
-task copyWebsite (type: Exec, dependsOn: ['copyReports', 'copyDocs', 'copyWebpages']) {
-    commandLine = ['git', '-C', pagesDir, 'status']
+task copyWebsite (dependsOn: ['copyReports', 'copyDocs', 'copyWebpages']) {
 }
 
 
@@ -82,22 +81,12 @@ task commitWebsite (dependsOn: 'copyWebsite') {
 
         exec {
             workingDir = pagesDir
-            commandLine = ['git', 'status']
-            ignoreExitValue = true
-        }
-        exec {
-            workingDir = pagesDir
             commandLine = ['git', 'add', pagesDir]
             ignoreExitValue = true
         }
         exec {
             workingDir = pagesDir
             commandLine = ['git', 'commit', '-m', 'Updating webpages at ' + now.toString()]
-            ignoreExitValue = true
-        }
-        exec {
-            workingDir = pagesDir
-            commandLine = ['git', 'status']
             ignoreExitValue = true
         }
     }
