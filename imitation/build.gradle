@@ -23,6 +23,7 @@ task timeStamp {
         FileWriter out = new FileWriter("build/reports/timeStamp.md")
         out.write("# Generated at\n\n" + now + "\n")
         out.close()
+        println "The timestamp is " + now
     }
 }
 
@@ -45,6 +46,10 @@ task workTree(dependsOn: ['clearPages']) {
         exec {
             workingDir = pagesDir
             commandLine = ['git', 'checkout', 'gh-pages']
+        }
+        exec {
+            workingDir = pagesDir
+            commandLine = ['git', 'pull']
         }
     }
 }
@@ -70,11 +75,11 @@ task copyWebsite (type: Exec, dependsOn: ['copyReports', 'copyDocs', 'copyWebpag
 }
 
 
-task deployReports (dependsOn: 'copyWebsite') {
-    group = "Reporting"
-    description  'Commit and push website changes to GitHub'
+
+task commitWebsite (dependsOn: 'copyWebsite') {
     doLast {
         Date now = new Date()
+
         exec {
             workingDir = pagesDir
             commandLine = ['git', 'status']
@@ -92,9 +97,16 @@ task deployReports (dependsOn: 'copyWebsite') {
         }
         exec {
             workingDir = pagesDir
-            commandLine = ['git', 'push']
+            commandLine = ['git', 'status']
             ignoreExitValue = true
         }
     }
 }
 
+task deployReports (type: Exec, dependsOn: 'commitWebsite') {
+    group = "Reporting"
+    description  'Commit and push website changes to GitHub'
+    workingDir = pagesDir
+    commandLine = ['git', 'push']
+    ignoreExitValue = true
+}
