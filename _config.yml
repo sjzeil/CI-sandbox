@@ -3,7 +3,6 @@ title: "My CI SandBox"
 description: "A project devoted to exploring CI and web deployment options."
 baseurl: /
 header_pages:
-    - [Home](index.md)
     - javadoc/index.html
     - tests/test/index.html
     - timestamp.md
