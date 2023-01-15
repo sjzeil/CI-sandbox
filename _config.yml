@@ -1,7 +1,8 @@
-theme: minima
+remote_theme: jekyll/minima
 title: "My CI SandBox"
 description: "A project devoted to exploring CI and web deployment options."
 baseurl: /
+skin: dark
 header_pages:
   - timestamp.md
   - javadoc/index.html
