@@ -4,9 +4,5 @@ plugins:
 title: "My CI SandBox"
 description: "A project devoted to exploring CI and web deployment options."
 logo: https://www.cs.odu.edu/~zeil/images/cslogo.gif
-header_pages:
-  - timestamp.md
-  - javadoc/index.html
-  - tests/test/index.html
-skin: dark
+show_downloads: false
   
