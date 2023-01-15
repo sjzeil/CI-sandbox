@@ -1,6 +1,9 @@
-# CI-sandbox
+---
+title: CI-Sandbox by SJZ
+---
 
-For playing around with GitHub Actions
+This is a sandbox area for playing around with GitHub Actions
+and GitHub Pages.
 
 * [Javadocs](javadoc/index.html)
 * [Unit tests](tests/test/index.html)
