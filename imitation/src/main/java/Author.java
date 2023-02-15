@@ -62,11 +62,11 @@ public class Author {
         File inputFile = new File(args[0]);
         int numWords = Integer.parseInt(args[1]);
         Author au = new Author(inputFile);
-        au.generateText (numWords);
+        au.generateAuthorDescription (numWords);
         System.out.print (au.formatText());
     }
 
-    private void generateText(int numWords) {
+    private void generateAuthorDescription(int numWords) {
         String lastWord = "";
         StringBuffer results = new StringBuffer();
         for (int i = 0; i < numWords; ++i) {
