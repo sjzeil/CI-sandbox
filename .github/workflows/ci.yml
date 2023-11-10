@@ -30,6 +30,8 @@ jobs:
     - name: Update website
       working-directory: ./imitation
       run: |
+        echo eval $(ssh-agent -s -t 600)
+        echo ssh-add <(echo "${{ secrets.REPORTS_SSH_KEY }}")
         git config user.email "szeil@odu.edu"
         git config user.name "Steven Zeil"
         ./gradlew deployReports

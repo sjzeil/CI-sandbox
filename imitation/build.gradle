@@ -1,5 +1,6 @@
 plugins {
    id 'java'
+   id 'org.ajoberstar.git-publish' version '4.2.0'
 }
 
 repositories {
@@ -31,75 +32,33 @@ task timeStamp {
     }
 }
 
-task reports (dependsOn: ['javadoc', 'test', 'timeStamp']) {}
+task copyDocs (type: Copy, dependsOn: ['javadoc']) {
+    from 'build/docs'
+    into 'build/reports'
+}
+
+task reports (dependsOn: ['copyDocs', 'test', 'timeStamp']) {}
 
 ////////  Website publication on GitHub pages ///////////////////
 
-def pagesDir = file('../../website-tmp').absolutePath
 
-task clearPages(type: Delete) {
-    delete pagesDir
-}
+gitPublishCopy.dependsOn reports
+gitPublish {
+    // the repository
+    repoUri = 'git@github.com:sjzeil/CI-sandbox.git'
 
-task workTree(dependsOn: ['clearPages']) { 
-    doLast {
-        exec {
-            workingDir = '.'
-            commandLine = ['git', 'worktree', 'add', '-f', pagesDir, 'gh-pages']
-        }
-        exec {
-            workingDir = pagesDir
-            commandLine = ['git', 'checkout', 'gh-pages']
-        }
-        exec {
-            workingDir = pagesDir
-            commandLine = ['git', 'pull']
-        }
+    // branch in which to publish
+    branch = 'gh-pages'
+  
+    // what to publish
+    contents {
+        from 'imitation/build/reports'
     }
+
 }
 
 
-task copyReports (type: Copy, dependsOn: ['reports', 'workTree']) {
-    from 'build/reports'
-    into pagesDir
-}
-
-task copyDocs (type: Copy, dependsOn: ['javadoc', 'workTree']) {
-    from 'build/docs'
-    into pagesDir
-}
-
-task copyWebpages (type: Copy, dependsOn: ['workTree']) {
-    from 'src/main/html'
-    into pagesDir
-}
-
-task copyWebsite (dependsOn: ['copyReports', 'copyDocs', 'copyWebpages']) {
-}
-
-
-
-task commitWebsite (dependsOn: 'copyWebsite') {
-    doLast {
-        Date now = new Date()
-
-        exec {
-            workingDir = pagesDir
-            commandLine = ['git', 'add', pagesDir]
-            ignoreExitValue = true
-        }
-        exec {
-            workingDir = pagesDir
-            commandLine = ['git', 'commit', '-m', 'Updating webpages at ' + now.toString()]
-            ignoreExitValue = true
-        }
-    }
-}
-
-task deployReports (type: Exec, dependsOn: 'commitWebsite') {
+task deployReports (dependsOn: 'gitPublishPush') {
     group = "Reporting"
     description  'Commit and push website changes to GitHub'
-    workingDir = pagesDir
-    commandLine = ['git', 'push']
-    ignoreExitValue = true
 }
