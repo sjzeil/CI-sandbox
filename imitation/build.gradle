@@ -32,11 +32,16 @@ task timeStamp {
     }
 }
 
-task reports (dependsOn: ['javadoc', 'test', 'timeStamp']) {}
+task copyDocs (type: Copy, dependsOn: 'javadoc') {
+    from 'build/docs'
+    into 'build/reports'
+}
+
+task reports (dependsOn: ['copyDocs', 'test', 'timeStamp']) {}
 
 ////////  Website publication on GitHub pages ///////////////////
 
-def pagesDir = file("${project.rootDir}/../website-temp").absolutePath
+def pagesDir = file("${project.rootDir}/build/website-temp").absolutePath
 
 task clearPages(type: Delete) {
     delete pagesDir
@@ -60,34 +65,40 @@ task workTree(dependsOn: ['clearPages']) {
 }
 
 
+
+
+////////  Website publication on GitHub pages ///////////////////
+
 task copyReports (type: Copy, dependsOn: ['reports', 'workTree']) {
     from 'build/reports'
     into pagesDir
 }
 
-task copyDocs (type: Copy, dependsOn: ['javadoc', 'workTree']) {
-    from 'build/docs'
-    into 'build/reports'
+task copyReadMe (type: Copy, dependsOn: ['workTree']) {
+    from '../README.md'
+    into pagesDir
 }
 
-task reports (dependsOn: ['copyDocs', 'test', 'timeStamp']) {}
+task copyWebsite (type: Copy, dependsOn: ['copyReports', 'copyReadMe']) {
+    from file('src/main/html')
+    into pagesDir
+}
 
-////////  Website publication on GitHub pages ///////////////////
+task commitWebsite (dependsOn: 'copyWebsite') {
+    doLast {
+        Date now = new Date()
 
-
-gitPublishCopy.dependsOn reports
-gitPublish {
-    // the repository
-    repoUri = 'git@github.com:sjzeil/CI-sandbox.git'
-
-    // branch in which to publish
-    branch = 'gh-pages'
-  
-    // what to publish
-    contents {
-        from 'imitation/build/reports'
+        exec {
+            workingDir = pagesDir
+            commandLine = ['git', 'add', pagesDir]
+            ignoreExitValue = true
+        }
+        exec {
+            workingDir = pagesDir
+            commandLine = ['git', 'commit', '-m', 'Updating webpages at ' + now.toString()]
+            ignoreExitValue = true
+        }
     }
-
 }
 
 task pushWebsite (type: Exec, dependsOn: 'commitWebsite') {
