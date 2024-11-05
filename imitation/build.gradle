@@ -1,5 +1,6 @@
 plugins {
    id 'java'
+   id 'org.ajoberstar.git-publish' version '4.2.2'
 }
 
 repositories {
@@ -66,34 +67,27 @@ task copyReports (type: Copy, dependsOn: ['reports', 'workTree']) {
 
 task copyDocs (type: Copy, dependsOn: ['javadoc', 'workTree']) {
     from 'build/docs'
-    into pagesDir
+    into 'build/reports'
 }
 
-task copyWebpages (type: Copy, dependsOn: ['workTree']) {
-    from 'src/main/html'
-    into pagesDir
-}
+task reports (dependsOn: ['copyDocs', 'test', 'timeStamp']) {}
 
-task copyWebsite (dependsOn: ['copyReports', 'copyDocs', 'copyWebpages']) {
-}
+////////  Website publication on GitHub pages ///////////////////
 
 
+gitPublishCopy.dependsOn reports
+gitPublish {
+    // the repository
+    repoUri = 'git@github.com:sjzeil/CI-sandbox.git'
 
-task commitWebsite (dependsOn: 'copyWebsite') {
-    doLast {
-        Date now = new Date()
-
-        exec {
-            workingDir = pagesDir
-            commandLine = ['git', 'add', pagesDir]
-            ignoreExitValue = true
-        }
-        exec {
-            workingDir = pagesDir
-            commandLine = ['git', 'commit', '-m', 'Updating webpages at ' + now.toString()]
-            ignoreExitValue = true
-        }
+    // branch in which to publish
+    branch = 'gh-pages'
+  
+    // what to publish
+    contents {
+        from 'imitation/build/reports'
     }
+
 }
 
 task pushWebsite (type: Exec, dependsOn: 'commitWebsite') {
