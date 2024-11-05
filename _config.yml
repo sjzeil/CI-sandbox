@@ -3,6 +3,6 @@ plugins:
 - jekyll-remote-theme
 title: "My CI SandBox"
 description: "A project devoted to exploring CI and web deployment options."
-logo: https://ww1.odu.edu/facultystaff/communication/toolkit/current-logos/_jcr_content/par/section_1593932067/columns/column_0/section/image.img.440.jpg/1594322669659.jpg
+logo: https:www.cs.odu.edu/~zeil/images/odulion.gif
 show_downloads: false
   
